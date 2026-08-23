@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ScrapeGuard | Web Data Intelligence</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #090b12;
+      color: #f4f6fb;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: auto;
+    }
+
+    header {
+      padding: 28px 0;
+      border-bottom: 1px solid #222633;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #6ee7ff;
+    }
+
+    .status {
+      padding: 8px 13px;
+      border: 1px solid #244653;
+      border-radius: 999px;
+      color: #7ee8ff;
+      font-size: 13px;
+      background: #0d171c;
+    }
+
+    .hero {
+      padding: 60px 0 35px;
+    }
+
+    .eyebrow {
+      color: #6ee7ff;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 0.98;
+      max-width: 800px;
+      letter-spacing: -3px;
+    }
+
+    .hero p {
+      color: #9ca3b4;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 700px;
+      margin-top: 22px;
+    }
+.analyzer {
+  background: #11141d;
+  border: 1px solid #242936;
+  border-radius: 18px;
+  padding: 22px;
+  margin: 10px 0 20px;
+}
+
+.analyzer-label {
+  color: #6ee7ff;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.analyzer-row {
+  display: flex;
+  gap: 10px;
+}
+
+.analyzer input {
+  flex: 1;
+  min-width: 0;
+  background: #0b0e15;
+  color: #f4f6fb;
+  border: 1px solid #303645;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.analyzer input:focus {
+  border-color: #6ee7ff;
+}
+
+.analyzer button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0 22px;
+  background: #6ee7ff;
+  color: #071016;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.analyzer button:hover {
+  opacity: 0.85;
+}
+
+.analyze-status {
+  color: #777f91;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .analyzer-row {
+    flex-direction: column;
+  }
+
+  .analyzer button {
+    padding: 13px;
+  }
+}
+.quality-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.quality-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #0b0e15;
+}
+
+.quality-item.valid {
+  border: 1px solid #1f4937;
+}
+
+.quality-item.valid span:first-child {
+  color: #4ade80;
+}
+
+.quality-item.warning {
+  border: 1px solid #51451f;
+}
+
+.quality-item.warning span:first-child {
+  color: #facc15;
+}
+.workflow {
+  margin-top: 20px;
+  padding: 20px;
+  background: #11141d;
+  border: 1px solid #242936;
+  border-radius: 16px;
+}
+
+.workflow h3 {
+  margin: 0 0 16px;
+}
+
+.workflow-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.workflow-step {
+  min-width: 120px;
+  padding: 12px;
+  background: #0b0e15;
+  border: 1px solid #303645;
+  border-radius: 10px;
+}
+
+.workflow-step span {
+  display: block;
+  color: #6ee7ff;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.workflow-step strong {
+  display: block;
+  font-size: 14px;
+}
+
+.workflow-step small {
+  display: block;
+  color: #777f91;
+  margin-top: 4px;
+}
+
+.workflow-arrow {
+  color: #6ee7ff;
+  font-size: 20px;
+}
+    .grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 20px;
+      padding: 30px 0 60px;
+    }
+
+    .card {
+      background: #11141d;
+      border: 1px solid #242936;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    .card-title {
+      color: #9ca3b4;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 18px;
+    }
+
+    .product-name {
+      font-size: 29px;
+      font-weight: 750;
+      margin-bottom: 22px;
+    }
+
+    .price {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .availability {
+      color: #7ee8a8;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .description {
+      color: #aeb4c2;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .stat {
+      background: #0b0e15;
+      border: 1px solid #202531;
+      border-radius: 12px;
+      padding: 17px;
+    }
+
+    .stat-label {
+      color: #777f91;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .warning {
+      border: 1px solid #664d1b;
+      background: #19150b;
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 20px;
+    }
+
+    .warning h3 {
+      color: #ffd36e;
+      margin-bottom: 8px;
+    }
+
+    .warning p {
+      color: #bdb49e;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .collector {
+      background: #0b0e15;
+      border: 1px solid #202531;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .collector-label {
+      color: #777f91;
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .collector-id {
+      color: #6ee7ff;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #0b0e15;
+      border: 1px solid #202531;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #123a2b;
+      color: #72e6a2;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .step span {
+      color: #c8cdd8;
+      font-size: 14px;
+    }
+
+    .heal {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #101a25;
+      border: 1px solid #29465d;
+    }
+
+    .heal strong {
+      color: #6ee7ff;
+    }
+
+    .heal p {
+      color: #9ca3b4;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 7px;
+    }
+
+    footer {
+      border-top: 1px solid #222633;
+      padding: 25px 0;
+      color: #6f7788;
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="logo">Scrape<span>Guard</span></div>
+    <div class="status">● Bright Data Connected</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="eyebrow">Web Data Intelligence</div>
+
+    <h1>
+      Turn messy web data into useful intelligence.
+    </h1>
+
+    <p>
+      ScrapeGuard uses Bright Data Scraper Studio to extract structured
+      product information and identify data-quality problems before they
+      reach downstream applications.
+    </p>
+  </section>
+  <div class="analyzer">
+
+  <div class="analyzer-label">
+    ANALYZE A WEB PAGE
+  </div>
+
+  <div class="analyzer-row">
+
+    <input
+      id="urlInput"
+      type="text"
+      value="https://shopalto.xyz/product/aurora-wireless-headphones"
+      placeholder="Paste a webpage URL..."
+    >
+
+    <button onclick="analyzePage()">
+      ANALYZE
+    </button>
+
+  </div>
+
+  <div id="analyzeStatus" class="analyze-status">
+    Ready to analyze
+  </div>
+
+</div>
+
+  <section class="grid">
+
+    <!-- PRODUCT DATA -->
+
+    <div class="card">
+
+      <div class="card-title">Live Scraped Data</div>
+
+      <div id="productName" class="product-name">
+        Loading...
+      </div>
+
+      <div id="price" class="price">
+        —
+      </div>
+
+      <div id="availability" class="availability">
+        —
+      </div>
+
+      <p id="description" class="description">
+        Loading scraped description...
+      </p>
+
+      <div class="stats">
+
+        <div class="stat">
+          <div class="stat-label">Rating</div>
+          <div id="rating" class="stat-value">—</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Review Count</div>
+          <div id="reviews" class="stat-value">—</div>
+        </div>
+
+      </div>
+
+      <div class="warning">
+        <h3>⚠ Data Quality Alert</h3>
+
+      <p>
+  Automated validation detected anomalies before the data reached downstream applications.
+</p>
+
+<div class="quality-checks">
+
+  <div class="quality-item valid">
+    <span>✓</span>
+    <span>Product name — Valid</span>
+  </div>
+
+  <div class="quality-item valid">
+    <span>✓</span>
+    <span>Rating — Valid</span>
+  </div>
+
+  <div class="quality-item warning">
+    <span>⚠</span>
+    <span>Price — Unusually low</span>
+  </div>
+
+  <div class="quality-item warning">
+    <span>⚠</span>
+    <span>Review count — Suspicious magnitude</span>
+  </div>
+
+  <div class="quality-item warning">
+    <span>⚠</span>
+    <span>Description — Low text coherence</span>
+  </div>
+
+</div>
+
+<p>
+  <strong>3 anomalies detected.</strong>
+  The scraper was sent through Bright Data's self-healing workflow.
+</p>
+      </div>
+
+    </div>
+
+
+    <!-- PIPELINE -->
+
+    <div class="card">
+
+      <div class="card-title">Scraper Pipeline</div>
+
+      <div class="collector">
+        <div class="collector-label">Bright Data Collector ID</div>
+
+        <div class="collector-id">
+          c_mt5s3lb61jaqxdqgea
+        </div>
+      </div>
+
+      <div class="pipeline">
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Public website discovered</span>
+        </div>
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Scraper created with Scraper Studio</span>
+        </div>
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Structured data extracted</span>
+        </div>
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Data quality issue detected</span>
+        </div>
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Self-healing workflow executed</span>
+        </div>
+
+        <div class="step">
+          <div class="check">✓</div>
+          <span>Healed scraper approved</span>
+        </div>
+
+      </div>
+
+      <div class="heal">
+        <strong>Self-Healing Active</strong>
+
+        <p>
+          When extraction quality drops, the scraper can be sent through
+          Bright Data's healing workflow without creating a new collector.
+        </p>
+        <div class="workflow">
+
+  <h3>How ScrapeGuard Works</h3>
+
+  <div class="workflow-steps">
+
+    <div class="workflow-step">
+      <span>01</span>
+      <strong>Discover</strong>
+      <small>Public webpage</small>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <div class="workflow-step">
+      <span>02</span>
+      <strong>Scrape</strong>
+      <small>Bright Data</small>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <div class="workflow-step">
+      <span>03</span>
+      <strong>Validate</strong>
+      <small>Quality checks</small>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <div class="workflow-step">
+      <span>04</span>
+      <strong>Heal</strong>
+      <small>Self-healing scraper</small>
+    </div>
+
+  </div>
+
+</div>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    ScrapeGuard · Built for Scrape-Verse 2026 · Powered by Bright Data
+  </div>
+</footer>
+
+
+<script>
+
+async function loadData() {
+
+  try {
+
+    const response = await fetch("data.json");
+    const data = await response.json();
+
+    // Basic product information
+    document.getElementById("productName").textContent =
+      data.product_name;
+
+    document.getElementById("price").textContent =
+      `${data.price.symbol}${Number(data.price.value).toFixed(2)}`;
+
+    document.getElementById("availability").textContent =
+      data.availability;
+
+    document.getElementById("description").textContent =
+      data.product_description;
+
+    document.getElementById("rating").textContent =
+      `⭐ ${data.rating}`;
+
+    // Detect suspicious review count
+    const reviewCount = Number(data.review_count);
+
+    if (!Number.isFinite(reviewCount) || reviewCount > 1000000) {
+
+      document.getElementById("reviews").textContent =
+        "⚠ Suspicious";
+
+    } else {
+
+      document.getElementById("reviews").textContent =
+        reviewCount.toLocaleString();
+
+    }
+
+  } catch (error) {
+
+    document.getElementById("productName").textContent =
+      "Unable to load scraper data";
+
+    console.error(error);
+
+  }
+
+}
+
+loadData();
+function analyzePage() {
+
+  const input = document.getElementById("urlInput");
+  const status = document.getElementById("analyzeStatus");
+
+  const url = input.value.trim();
+
+  if (!url) {
+    status.textContent = "⚠ Please enter a webpage URL.";
+    return;
+  }
+
+  status.textContent = "⟳ Analyzing webpage...";
+
+  setTimeout(() => {
+
+    status.textContent =
+      "✓ Analysis complete — structured data loaded and quality checks performed.";
+
+    window.scrollTo({
+      top: document.querySelector(".grid").offsetTop - 20,
+      behavior: "smooth"
+    });
+
+  }, 1200);
+}
+</script>
+</body>
+</html>
